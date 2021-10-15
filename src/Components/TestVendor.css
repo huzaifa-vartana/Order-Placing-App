@@ -1,0 +1,28 @@
+.cen {
+  height: 200px;
+  line-height: 200px;
+  text-align: center;
+}
+.span-cen {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+  font-size: 2rem;
+}
+/* .input-type-1 {
+  font: inherit !important;
+  color: currentColor !important;
+  width: 100% !important;
+  border: 0 !important;
+  height: 1.1876em !important;
+  margin: 0 !important;
+  display: block !important;
+  padding: 6px 0 7px !important;
+  min-width: 0 !important;
+  background: none !important;
+  box-sizing: content-box !important;
+  animation-name: mui-auto-fill-cancel;
+  letter-spacing: inherit;
+  animation-duration: 10ms !important;
+  -webkit-tap-highlight-color: transparent;
+} */
