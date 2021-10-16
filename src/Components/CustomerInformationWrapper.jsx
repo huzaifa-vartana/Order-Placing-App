@@ -23,6 +23,9 @@ import { DatePickerWrapper } from "./DatePicker";
 import { format } from "date-fns";
 import { supabase } from "../Config/Client";
 
+import { GridComponent } from "./GridComponent";
+import TableComponent from "./TableComponent";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -46,8 +49,7 @@ export default function CustomerInformationWrapper(props) {
   }, []);
 
   const fetchProducts = async () => {
-    let { data } = await supabase.from("PRODUCTS").select("*");
-
+    let { data } = await supabase.from("PRODUCTS").select("*").order("ID", { ascending: true });
     setProducts(data);
   };
 
@@ -164,7 +166,11 @@ export default function CustomerInformationWrapper(props) {
                       label="Delivery Date"
                     />
                   </Grid>
-
+                  <Grid item xs={12} style={{ marginTop: 16 }}>
+                    {products.length > 0 && (
+                      <TableComponent products={products.length > 0 && products} />
+                    )}
+                  </Grid>
                   <Grid item style={{ marginTop: 16 }}>
                     <Button
                       type="button"
@@ -175,6 +181,7 @@ export default function CustomerInformationWrapper(props) {
                       Reset
                     </Button>
                   </Grid>
+
                   <Grid item style={{ marginTop: 16 }}>
                     <Button variant="contained" color="primary" type="submit" disabled={submitting}>
                       Submit
