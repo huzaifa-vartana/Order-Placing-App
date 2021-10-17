@@ -46,6 +46,7 @@ export const ProductRowClone = ({ products, handleOrderItems, id }) => {
         <input
           ref={quantityRef}
           min="0"
+          step="0.1"
           type="number"
           value={quantity}
           onChange={(event) => {
@@ -67,7 +68,7 @@ export const ProductRowClone = ({ products, handleOrderItems, id }) => {
       <TableCell align="right"> {product && product.UNIT}</TableCell>
       <TableCell align="right"> {product && +product.PRICE.toFixed(2)}</TableCell>
       <TableCell align="right">
-        {quantity && product ? Math.round(quantity * product.PRICE).toFixed(2) : 0}
+        {quantity && product ? (quantity * product.PRICE).toFixed(2) : 0}
       </TableCell>
     </TableRow>
   );

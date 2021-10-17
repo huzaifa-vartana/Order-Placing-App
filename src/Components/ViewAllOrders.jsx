@@ -38,9 +38,6 @@ export function ViewAllOrders() {
   }, []);
 
   const fetchOrdersFromDB = async () => {
-    // let { data } = await supabase.from("ORDERS").select("*").order("ID", { ascending: true });
-    // setOrderDetails(data);
-
     let { data } = await supabase.from("ORDERS").select(
       `
     *,
@@ -49,12 +46,9 @@ export function ViewAllOrders() {
     )
   `
     );
+    console.log(data);
     setOrderDetails(data);
   };
-
-  //   console.log(new Date(orderDetails[0].DELIVERY_DATE));
-  //   orderDetails.length > 0 &&
-  //     console.log(format(new Date(orderDetails[0].DELIVERY_DATE), "dd-MMM-yy hh:mm:ss"));
 
   return (
     <TableContainer component={Paper}>

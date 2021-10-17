@@ -33,8 +33,6 @@ export default function PlaceOrderComponent() {
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [errorPlacingOrder, setErrorPlacingOrder] = useState(false);
 
-  const [userInformation, setUserInformation] = useState({});
-
   const [customerInformationPreSet, setCustomerInformationPreSet] = useState({});
 
   const getOrderItemsFromChild = async (rowID, updatedQuantity, orderItemObject) => {
@@ -51,7 +49,6 @@ export default function PlaceOrderComponent() {
 
   useEffect(() => {
     fetchProductsFromDB();
-    setUserInformation(JSON.parse(localStorage.getItem("userInformation")));
     setCustomerInformationPreSet(JSON.parse(localStorage.getItem("userInformation")));
   }, []);
 
@@ -177,7 +174,7 @@ export default function PlaceOrderComponent() {
             }}
             severity="error"
           >
-            Error Occured while Placing Order - Try Again
+            Error Occurred while Placing Order - Try Again
           </Alert>
         )}
         <Form
@@ -295,13 +292,9 @@ export default function PlaceOrderComponent() {
                     <Tooltip title="Value Rounded Off" placement="right-start">
                       <div align="right">
                         Grand Total (Hover):
-                        {Math.round(
-                          orderItems.reduce((sum, i) => (sum += i.quantity * i.price), 0)
-                        ).toFixed(2)}
+                        {orderItems.reduce((sum, i) => (sum += i.quantity * i.price), 0).toFixed(2)}
                         {setGrandTotal(
-                          Math.round(
-                            orderItems.reduce((sum, i) => (sum += i.quantity * i.price), 0)
-                          ).toFixed(2)
+                          orderItems.reduce((sum, i) => (sum += i.quantity * i.price), 0).toFixed(2)
                         )}
                       </div>
                     </Tooltip>

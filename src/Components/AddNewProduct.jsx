@@ -23,6 +23,7 @@ export const AddNewProduct = () => {
       productUnitRef.current.value = "";
       productPriceRef.current.value = "";
       history.push("/");
+      return;
     }
     alert("Error Occurred");
   };
