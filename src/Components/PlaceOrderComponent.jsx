@@ -16,7 +16,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Tooltip from "@mui/material/Tooltip";
-import { ProductRowClone } from "./ProductRowClone";
+import { ProductRowClone } from "./ProductRow";
+import { Link } from "react-router-dom";
 
 export default function PlaceOrderComponent() {
   const customerNameRef = useRef();
@@ -77,6 +78,7 @@ export default function PlaceOrderComponent() {
         DELIVERY_ADDRESS: values.CustomerAddress,
         ORDER_TAKER_NAME: values.OrderTakerName,
         DELIVERY_DATE: deliveryDate,
+        ORDER_TOTAL_PRICE: grandTotal,
       };
       setButtonDisabled(true);
       const { data, error } = await supabase.from("ORDERS").insert([payload]);
@@ -92,6 +94,7 @@ export default function PlaceOrderComponent() {
               PRODUCT_UNIT_PRICE: parseInt(orderItems[key].price),
               QUANTITY: parseInt(orderItems[key].quantity),
               TOTAL: parseInt(orderItems[key].quantity * orderItems[key].price),
+              SORT_NUMBER: 1,
             });
           }
         }
@@ -267,22 +270,22 @@ export default function PlaceOrderComponent() {
                         </TableHead>
                         <TableBody>
                           <ProductRowClone
-                            id="row1"
+                            id="1"
                             handleOrderItems={getOrderItemsFromChild}
                             products={products}
                           />
                           <ProductRowClone
-                            id="row2"
+                            id="2"
                             handleOrderItems={getOrderItemsFromChild}
                             products={products}
                           />
                           <ProductRowClone
-                            id="row3"
+                            id="3"
                             handleOrderItems={getOrderItemsFromChild}
                             products={products}
                           />
                           <ProductRowClone
-                            id="row4"
+                            id="4"
                             handleOrderItems={getOrderItemsFromChild}
                             products={products}
                           />
@@ -303,7 +306,7 @@ export default function PlaceOrderComponent() {
                       </div>
                     </Tooltip>
                   </Grid>
-                  <Grid item style={{ marginTop: 10, flex: 1 }}>
+                  <Grid item style={{ marginTop: 10 }}>
                     <Button
                       variant="contained"
                       color="primary"
@@ -312,6 +315,20 @@ export default function PlaceOrderComponent() {
                     >
                       Submit
                     </Button>
+                  </Grid>
+                  <Grid item style={{ marginTop: 10 }}>
+                    <Link style={{ textDecoration: "none" }} to="/add">
+                      <Button variant="contained" color="secondary">
+                        Go to Add Product Page
+                      </Button>
+                    </Link>
+                  </Grid>
+                  <Grid item style={{ marginTop: 10 }}>
+                    <Link style={{ textDecoration: "none" }} to="/view">
+                      <Button variant="contained" color="secondary">
+                        View All Orders
+                      </Button>
+                    </Link>
                   </Grid>
                 </Grid>
               </Paper>
