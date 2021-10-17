@@ -1,10 +1,10 @@
 import "./App.css";
+import PlaceOrderComponent from "./Components/PlaceOrderComponent";
 
-import CustomerInformationWrapper from "./Components/CustomerInformationWrapper";
 function App() {
   return (
     <>
-      <CustomerInformationWrapper />
+      <PlaceOrderComponent />
     </>
   );
 }

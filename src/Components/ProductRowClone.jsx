@@ -2,7 +2,7 @@ import React from "react";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 
-export const ProductRow = ({ products, handlePrice, id }) => {
+export const ProductRowClone = ({ products, handlePrice, id }) => {
   const quantityRef = React.useRef();
   const selectedProductRef = React.useRef();
   const [quantity, setQuantity] = React.useState(0);
@@ -49,7 +49,6 @@ export const ProductRow = ({ products, handlePrice, id }) => {
           type="number"
           value={quantity}
           onChange={(event) => {
-            let oldQuantity = quantity;
             setQuantity(quantityRef.current.value);
             let payload = {
               quantity: quantityRef.current && quantityRef.current.value,
@@ -65,8 +64,10 @@ export const ProductRow = ({ products, handlePrice, id }) => {
         />
       </TableCell>
       <TableCell align="right"> {product && product.UNIT}</TableCell>
-      <TableCell align="right"> {product && +product.PRICE}</TableCell>
-      <TableCell align="right">{quantity && product ? quantity * product.PRICE : 0}</TableCell>
+      <TableCell align="right"> {product && +product.PRICE.toFixed(2)}</TableCell>
+      <TableCell align="right">
+        {quantity && product ? Math.round(quantity * product.PRICE).toFixed(2) : 0}
+      </TableCell>
     </TableRow>
   );
 };

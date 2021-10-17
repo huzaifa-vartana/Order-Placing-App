@@ -1,48 +1,47 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Form, Field } from "react-final-form";
-import { TextField, Checkbox, Radio, Select } from "final-form-material-ui";
-import {
-  Typography,
-  Paper,
-  Link,
-  Grid,
-  Button,
-  CssBaseline,
-  RadioGroup,
-  FormLabel,
-  Input,
-  MenuItem,
-  FormGroup,
-  FormControl,
-  FormControlLabel,
-} from "@material-ui/core";
+import { TextField } from "final-form-material-ui";
+import { Typography, Grid, Button, CssBaseline } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { Badge } from "react-bootstrap";
 import { DatePickerWrapper } from "./DatePicker";
-import { format } from "date-fns";
 import { supabase } from "../Config/Client";
 
-import { GridComponent } from "./GridComponent";
-import TableComponent from "./TableComponent";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Tooltip from "@mui/material/Tooltip";
+import { ProductRowClone } from "./ProductRowClone";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-    "& > * + *": {
-      marginTop: theme.spacing(2),
-    },
-  },
-}));
-
-export default function CustomerInformationWrapper(props) {
+export default function PlaceOrderComponent() {
   const customerNameRef = useRef();
   const customerAddressRef = useRef();
   const deliveryDateRef = useRef();
   const orderTakerNameRef = useRef();
 
   const [products, setProducts] = useState([]);
-  const [delDate, setdelDate] = useState("");
+  const [deliveryDate, setDeliveryDate] = useState();
+  const [orderDetails, setOrderDetails] = useState({});
+  const [totalPrice, setTotalPrice] = React.useState(0);
+
+  const [state, setState] = React.useState([]);
+
+  const getData = async (index, val, object) => {
+    const existingProduct = state && state.find((product) => product.rowID == index);
+    if (!!!existingProduct) {
+      // setOrderItems((prevState) => [...prevState, object]);
+      return setState((prevState) => [...prevState, object]);
+    }
+    // setOrderItems((product) => (product.rowID === index ? { ...product, quantity: val } : product));
+    setState(
+      state.map((product) => (product.rowID === index ? { ...product, quantity: val } : product))
+    );
+  };
 
   useEffect(() => {
     fetchProducts();
@@ -54,7 +53,19 @@ export default function CustomerInformationWrapper(props) {
   };
 
   const onSubmit = async (values) => {
-    handleUpload(values);
+    if (!deliveryDate) {
+      return alert("Set Date Before Placing Order");
+    }
+    if (totalPrice <= 0) {
+      return alert("Buy Some Products to Place the Order");
+    }
+    let payloadData = {
+      customerName: values.CustomerName,
+      CustomerAddress: values.CustomerAddress,
+      OrderTakerName: values.OrderTakerName,
+      deliveryDate: deliveryDate,
+    };
+    setOrderDetails(payloadData);
   };
 
   const validate = (values) => {
@@ -71,16 +82,14 @@ export default function CustomerInformationWrapper(props) {
     if (!values.del_date) {
       errors.del_date = "Required";
     }
+    if (!deliveryDate) {
+      errors.del_date = "Set Date";
+    }
     return errors;
   };
 
-  const handleImageChange = async (e) => {};
-
-  const getData = async (date) => {
-    setdelDate(date);
-  };
-  const handleUpload = async (values) => {
-    console.log(values, format(delDate, "dd-MMM-yy"));
+  const getDeliveryDate = async (date) => {
+    setDeliveryDate(date);
   };
 
   return (
@@ -161,15 +170,40 @@ export default function CustomerInformationWrapper(props) {
                       required
                       ref={deliveryDateRef}
                       name="del_date"
-                      sendData={getData}
+                      sendData={getDeliveryDate}
                       component={DatePickerWrapper}
                       label="Delivery Date"
                     />
                   </Grid>
                   <Grid item xs={12} style={{ marginTop: 16 }}>
-                    {products.length > 0 && (
-                      <TableComponent products={products.length > 0 && products} />
-                    )}
+                    <TableContainer component={Paper}>
+                      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Serial #</TableCell>
+                            <TableCell align="right">Product Name</TableCell>
+                            <TableCell align="right">Quantity</TableCell>
+                            <TableCell align="right">Unit</TableCell>
+                            <TableCell align="right">Unit Price&nbsp;($)</TableCell>
+                            <TableCell align="right">Total Price&nbsp;($)</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <ProductRowClone id="row1" handlePrice={getData} products={products} />
+                          <ProductRowClone id="row2" handlePrice={getData} products={products} />
+                          <ProductRowClone id="row3" handlePrice={getData} products={products} />
+                          <ProductRowClone id="row4" handlePrice={getData} products={products} />
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    <Tooltip title="Value Rounded Off" placement="right-start">
+                      <div align="right">
+                        Total Price (Hover):
+                        {Math.round(
+                          state.reduce((sum, i) => (sum += i.quantity * i.price), 0)
+                        ).toFixed(2)}
+                      </div>
+                    </Tooltip>
                   </Grid>
                   <Grid item style={{ marginTop: 16 }}>
                     <Button
