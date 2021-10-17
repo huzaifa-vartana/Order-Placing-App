@@ -2,7 +2,7 @@ import React from "react";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 
-export const ProductRow = ({ products, handlePrice, id }) => {
+export const ProductRowClone = ({ products, handleOrderItems, id }) => {
   const quantityRef = React.useRef();
   const selectedProductRef = React.useRef();
   const [quantity, setQuantity] = React.useState(0);
@@ -34,9 +34,9 @@ export const ProductRow = ({ products, handlePrice, id }) => {
           <option value="none" selected disabled hidden>
             Select an Option
           </option>
-          {products.map((fbb) => (
-            <option key={fbb.ID} value={fbb.NAME}>
-              {fbb.NAME}
+          {products.map((product) => (
+            <option key={product.ID} value={product.NAME}>
+              {product.NAME}
             </option>
           ))}
           ;
@@ -49,24 +49,26 @@ export const ProductRow = ({ products, handlePrice, id }) => {
           type="number"
           value={quantity}
           onChange={(event) => {
-            let oldQuantity = quantity;
             setQuantity(quantityRef.current.value);
             let payload = {
+              id: product && product.ID,
               quantity: quantityRef.current && quantityRef.current.value,
               name: product && product.NAME,
               unit: product && product.UNIT,
               price: product && product.PRICE,
               rowID: id,
             };
-            product && handlePrice(id, quantityRef.current.value, payload);
+            product && handleOrderItems(id, quantityRef.current.value, payload);
           }}
           name="quantity"
           id="quantity"
         />
       </TableCell>
       <TableCell align="right"> {product && product.UNIT}</TableCell>
-      <TableCell align="right"> {product && +product.PRICE}</TableCell>
-      <TableCell align="right">{quantity && product ? quantity * product.PRICE : 0}</TableCell>
+      <TableCell align="right"> {product && +product.PRICE.toFixed(2)}</TableCell>
+      <TableCell align="right">
+        {quantity && product ? Math.round(quantity * product.PRICE).toFixed(2) : 0}
+      </TableCell>
     </TableRow>
   );
 };
