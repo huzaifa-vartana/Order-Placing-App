@@ -2,7 +2,7 @@ import React from "react";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 
-export const ProductRowClone = ({ products, handlePrice, id }) => {
+export const ProductRowClone = ({ products, handleOrderItems, id }) => {
   const quantityRef = React.useRef();
   const selectedProductRef = React.useRef();
   const [quantity, setQuantity] = React.useState(0);
@@ -34,9 +34,9 @@ export const ProductRowClone = ({ products, handlePrice, id }) => {
           <option value="none" selected disabled hidden>
             Select an Option
           </option>
-          {products.map((fbb) => (
-            <option key={fbb.ID} value={fbb.NAME}>
-              {fbb.NAME}
+          {products.map((product) => (
+            <option key={product.ID} value={product.NAME}>
+              {product.NAME}
             </option>
           ))}
           ;
@@ -51,13 +51,14 @@ export const ProductRowClone = ({ products, handlePrice, id }) => {
           onChange={(event) => {
             setQuantity(quantityRef.current.value);
             let payload = {
+              id: product && product.ID,
               quantity: quantityRef.current && quantityRef.current.value,
               name: product && product.NAME,
               unit: product && product.UNIT,
               price: product && product.PRICE,
               rowID: id,
             };
-            product && handlePrice(id, quantityRef.current.value, payload);
+            product && handleOrderItems(id, quantityRef.current.value, payload);
           }}
           name="quantity"
           id="quantity"
