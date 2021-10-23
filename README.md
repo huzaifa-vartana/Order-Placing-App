@@ -1,4 +1,4 @@
-### Order Placing Cart Web Application built using React JS, Supabase. 
+### Order Placing Cart Web Application built using React JS and Supabase(postgreSQL). 
 It covers the following functionalities:
 
 - Select Product from dropdown menu and Input quantity in the field (4 rows currently)
