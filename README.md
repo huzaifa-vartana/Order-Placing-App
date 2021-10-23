@@ -6,7 +6,7 @@ It covers the following functionalities:
 - View all the Placed Orders
 - Proper Validations and Error Checking
 - Calculates total price for the whole cart and for each row. 
-- Local Storage to save the customers inforamtion after subsequent visits. 
+- Local Storage to save the customer's information after subsequent visits. 
 
 
 
