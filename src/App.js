@@ -1,18 +1,17 @@
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
-import PlaceOrderComponent from "./Components/PlaceOrderComponent";
 import { AddNewProduct } from "./Components/AddNewProduct";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import PlaceOrderComponent from "./Components/PlaceOrderComponent";
 import { ViewAllOrders } from "./Components/ViewAllOrders";
+
 function App() {
   return (
     <Router>
-      <>
-        <Switch>
-          <Route path="/" exact component={PlaceOrderComponent} />
-          <Route path="/add" exact component={AddNewProduct} />
-          <Route path="/view" exact component={ViewAllOrders} />
-        </Switch>
-      </>
+      <Routes>
+        <Route path="/" element={<PlaceOrderComponent />} />
+        <Route path="/add" element={<AddNewProduct />} />
+        <Route path="/view" element={<ViewAllOrders />} />
+      </Routes>
     </Router>
   );
 }

@@ -1,10 +1,10 @@
-import React, { useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../Config/Client";
-import { useHistory } from "react-router-dom";
 
 export const AddNewProduct = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const productNameRef = useRef();
   const productPriceRef = useRef();
   const productUnitRef = useRef();
@@ -22,7 +22,7 @@ export const AddNewProduct = () => {
       productNameRef.current.value = "";
       productUnitRef.current.value = "";
       productPriceRef.current.value = "";
-      history.push("/");
+      navigate("/");
       return;
     }
     alert("Error Occurred");
