@@ -31,7 +31,7 @@ export const ProductRowClone = ({ products = [], handleOrderItems, id }) => {
           }}
           name="Product Name"
         >
-          <option value="none" selected disabled hidden>
+          <option value="none" defaultSelected disabled hidden>
             Select an Option
           </option>
           {Array.isArray(products) && products.map((product) => (

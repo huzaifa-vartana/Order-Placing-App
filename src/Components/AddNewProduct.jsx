@@ -17,7 +17,7 @@ export const AddNewProduct = () => {
       PRICE: productPriceRef.current.value,
     };
 
-    const { data, error } = await supabase.from("PRODUCTS").insert([product]);
+    const { error } = await supabase.from("PRODUCTS").insert([product]);
     if (!error) {
       productNameRef.current.value = "";
       productUnitRef.current.value = "";

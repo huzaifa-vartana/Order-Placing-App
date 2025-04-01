@@ -37,7 +37,7 @@ export default function PlaceOrderComponent() {
   const [customerInformationPreSet, setCustomerInformationPreSet] = useState({});
 
   const getOrderItemsFromChild = async (rowID, updatedQuantity, orderItemObject) => {
-    const existingProduct = orderItems && orderItems.find((product) => product.rowID == rowID);
+    const existingProduct = orderItems && orderItems.find((product) => product.rowID === rowID);
     if (!!!existingProduct) {
       return setOrderItems((prevState) => [...prevState, orderItemObject]);
     }
@@ -160,6 +160,34 @@ export default function PlaceOrderComponent() {
           Place Order
           <Badge variant="danger">New</Badge>
         </Typography>
+        {isLoading && (
+          <Alert
+            style={{
+              textAlign: "center",
+              margin: "auto",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            severity="info"
+          >
+            Loading products...
+          </Alert>
+        )}
+        {error && (
+          <Alert
+            style={{
+              textAlign: "center",
+              margin: "auto",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            severity="error"
+          >
+            Error loading products: {error}
+          </Alert>
+        )}
         {orderPlaced && (
           <Alert
             style={{
@@ -199,7 +227,7 @@ export default function PlaceOrderComponent() {
                 e.preventDefault();
                 onSubmit(values);
               }}
-              Validate
+              validate
             >
               <Paper style={{ padding: 16 }}>
                 <Grid
