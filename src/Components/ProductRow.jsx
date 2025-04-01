@@ -1,20 +1,20 @@
-import React from "react";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
+import React from "react";
 
-export const ProductRowClone = ({ products, handleOrderItems, id }) => {
+export const ProductRowClone = ({ products = [], handleOrderItems, id }) => {
   const quantityRef = React.useRef();
   const selectedProductRef = React.useRef();
   const [quantity, setQuantity] = React.useState(0);
   const [product, setProduct] = React.useState();
 
   const setSelectedProduct = (value) => {
-    products &&
-      products.map((productDetails) => {
-        if (productDetails.NAME == value) {
-          setProduct(productDetails);
-        }
-      });
+    if (!products) return;
+    products.forEach((productDetails) => {
+      if (productDetails.NAME === value) {
+        setProduct(productDetails);
+      }
+    });
   };
 
   return (
@@ -34,12 +34,11 @@ export const ProductRowClone = ({ products, handleOrderItems, id }) => {
           <option value="none" selected disabled hidden>
             Select an Option
           </option>
-          {products.map((product) => (
+          {Array.isArray(products) && products.map((product) => (
             <option key={product.ID} value={product.NAME}>
               {product.NAME}
             </option>
           ))}
-          ;
         </select>
       </TableCell>
       <TableCell align="right">

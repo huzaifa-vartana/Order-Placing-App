@@ -1,23 +1,23 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Form, Field } from "react-final-form";
-import { TextField } from "final-form-material-ui";
+import { Button, CssBaseline, Grid, Typography } from "@material-ui/core";
 import Alert from "@mui/material/Alert";
-import { Typography, Grid, Button, CssBaseline } from "@material-ui/core";
+import { TextField } from "final-form-material-ui";
+import React, { useEffect, useRef, useState } from "react";
+import { Field, Form } from "react-final-form";
 
 import { Badge } from "react-bootstrap";
-import { DatePickerWrapper } from "./DatePicker";
 import { supabase } from "../Config/Client";
+import { DatePickerWrapper } from "./DatePicker";
 
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import Tooltip from "@mui/material/Tooltip";
-import { ProductRowClone } from "./ProductRow";
 import { Link } from "react-router-dom";
+import { ProductRowClone } from "./ProductRow";
 
 export default function PlaceOrderComponent() {
   const customerNameRef = useRef();
@@ -26,6 +26,8 @@ export default function PlaceOrderComponent() {
   const orderTakerNameRef = useRef();
 
   const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [deliveryDate, setDeliveryDate] = useState();
   const [grandTotal, setGrandTotal] = useState(0);
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -53,8 +55,18 @@ export default function PlaceOrderComponent() {
   }, []);
 
   const fetchProductsFromDB = async () => {
-    let { data } = await supabase.from("PRODUCTS").select("*").order("ID", { ascending: true });
-    setProducts(data);
+    try {
+      setIsLoading(true);
+      setError(null);
+      let { data, error } = await supabase.from("PRODUCTS").select("*").order("ID", { ascending: true });
+      if (error) throw error;
+      setProducts(data || []);
+    } catch (err) {
+      setError(err.message);
+      setProducts([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const onSubmit = async (values) => {

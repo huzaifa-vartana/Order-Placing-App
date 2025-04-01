@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
+import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -6,9 +8,9 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import { format, isValid } from "date-fns";
+import React, { useEffect, useState } from "react";
 import { supabase } from "../Config/Client";
-import { format } from "date-fns";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -30,25 +32,59 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  const date = new Date(dateString);
+  return isValid(date) ? format(date, "dd-MMM-yy hh:mm:ss") : "Invalid Date";
+};
+
 export function ViewAllOrders() {
   const [orderDetails, setOrderDetails] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchOrdersFromDB();
   }, []);
 
   const fetchOrdersFromDB = async () => {
-    let { data } = await supabase.from("ORDERS").select(
+    try {
+      setIsLoading(true);
+      setError(null);
+      const { data, error } = await supabase.from("ORDERS").select(
+        `
+        *,
+        ORDER_ITEMS (
+          ORDER_ID
+        )
       `
-    *,
-    ORDER_ITEMS (
-      ORDER_ID
-    )
-  `
-    );
-    console.log(data);
-    setOrderDetails(data);
+      );
+      
+      if (error) throw error;
+      setOrderDetails(data || []);
+    } catch (err) {
+      setError(err.message);
+      setOrderDetails([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: '20px' }}>
+        <Alert severity="error">Error loading orders: {error}</Alert>
+      </div>
+    );
+  }
 
   return (
     <TableContainer component={Paper}>
@@ -66,7 +102,7 @@ export function ViewAllOrders() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {orderDetails.map((row) => (
+          {Array.isArray(orderDetails) && orderDetails.map((row) => (
             <StyledTableRow key={row.ID}>
               <StyledTableCell component="th" scope="row">
                 {row.CUSTOMER_NAME}
@@ -74,15 +110,15 @@ export function ViewAllOrders() {
               <StyledTableCell align="right">{row.DELIVERY_ADDRESS}</StyledTableCell>
               <StyledTableCell align="right">{row.ORDER_TAKER_NAME}</StyledTableCell>
               <StyledTableCell align="right">
-                {format(new Date(row.DELIVERY_DATE), "dd-MMM-yy")}
+                {formatDate(row.DELIVERY_DATE)}
               </StyledTableCell>
               <StyledTableCell align="right">{row.ORDER_TOTAL_PRICE}</StyledTableCell>
-              <StyledTableCell align="right">{row.ORDER_ITEMS.length}</StyledTableCell>
+              <StyledTableCell align="right">{row.ORDER_ITEMS?.length || 0}</StyledTableCell>
               <StyledTableCell align="right">
-                {format(new Date(row.CREATED_AT), "dd-MMM-yy hh:mm:ss ")}
+                {formatDate(row.CREATED_AT)}
               </StyledTableCell>
               <StyledTableCell align="right">
-                {format(new Date(row.UPDATED_AT), "dd-MMM-yy hh:mm:ss")}
+                {formatDate(row.UPDATED_AT)}
               </StyledTableCell>
             </StyledTableRow>
           ))}
