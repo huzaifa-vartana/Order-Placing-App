@@ -34,7 +34,7 @@
             "dest": "/logo512.png"
         },
         {
-            "src": "/(.*)",
+            "src": "/[^.]+",
             "dest": "/index.html"
         }
     ]
